@@ -6,4 +6,6 @@
 Для получения дополнительной информации см. [учебную программу курса](https://nextjs.org/learn) 
 на веб-сайте Next.js.
 
-Этот проект для изучения next.js, параллельно разрабатываю второй проект на основе данных этого auth-service-2 
+Этот проект для изучения next.js, параллельно разрабатываю второй проект на основе данных этого auth-service-2
+
+[Здесь закончил 11.04.2026 02:21](https://nextjs.org/learn/dashboard-app/static-and-dynamic-rendering#what-is-static-rendering)
