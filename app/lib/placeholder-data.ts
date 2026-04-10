@@ -47,7 +47,7 @@ const customers = [
     image_url: '/customers/balazs-orban.png',
   },
 ];
-
+// таблица счетов-фактур
 const invoices = [
   {
     customer_id: customers[0].id,
