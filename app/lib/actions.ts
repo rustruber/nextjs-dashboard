@@ -34,11 +34,11 @@ export async function createInvoice(formData: FormData) {
     VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
   `;
     } catch (error) {
-        // Пока мы выведем сообщение об ошибке в консоль.
+        // Пока что мы также выведем сообщение об ошибке в консоль.
         console.error(error);
-        return {
-            message: 'Database Error: Failed to Create Invoice.',
-        };
+        // return {
+        //     message: 'Database Error: Failed to Create Invoice.',
+        // };
     }
     revalidatePath('/dashboard/invoices');
     redirect('/dashboard/invoices');
@@ -52,17 +52,13 @@ export async function updateInvoice(id: string, formData: FormData) {
     });
 
     const amountInCents = amount * 100;
-    try {
-        await sql`
+
+    await sql`
     UPDATE invoices
     SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
     WHERE id = ${id}
   `;
-    } catch (error) {
-        // We'll also log the error to the console for now
-        console.error(error);
-        return {message: 'Database Error: Failed to Update Invoice.'};
-    }
+
     revalidatePath('/dashboard/invoices');
     redirect('/dashboard/invoices');
 }
