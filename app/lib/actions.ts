@@ -2,7 +2,7 @@
 
 import {z} from 'zod';
 import {revalidatePath} from 'next/cache';
-import { redirect } from 'next/navigation';
+import {redirect} from 'next/navigation';
 import postgres from 'postgres';
 
 const FormSchema = z.object({
@@ -14,7 +14,7 @@ const FormSchema = z.object({
 });
 
 // Используйте Zod для обновления ожидаемых типов.
-const UpdateInvoice = FormSchema.omit({ id: true, date: true });
+const UpdateInvoice = FormSchema.omit({id: true, date: true});
 
 const sql = postgres(process.env.POSTGRES_URL!, {ssl: 'require'});
 
@@ -28,31 +28,41 @@ export async function createInvoice(formData: FormData) {
     });
     const amountInCents = amount * 100;
     const date = new Date().toISOString().split('T')[0];
-
-    await sql`
+    try {
+        await sql`
     INSERT INTO invoices (customer_id, amount, status, date)
     VALUES (${customerId}, ${amountInCents}, ${status}, ${date})
   `;
-
+    } catch (error) {
+        // Пока мы выведем сообщение об ошибке в консоль.
+        console.error(error);
+        return {
+            message: 'Database Error: Failed to Create Invoice.',
+        };
+    }
     revalidatePath('/dashboard/invoices');
     redirect('/dashboard/invoices');
 }
 
 export async function updateInvoice(id: string, formData: FormData) {
-    const { customerId, amount, status } = UpdateInvoice.parse({
+    const {customerId, amount, status} = UpdateInvoice.parse({
         customerId: formData.get('customerId'),
         amount: formData.get('amount'),
         status: formData.get('status'),
     });
 
     const amountInCents = amount * 100;
-
-    await sql`
+    try {
+        await sql`
     UPDATE invoices
     SET customer_id = ${customerId}, amount = ${amountInCents}, status = ${status}
     WHERE id = ${id}
   `;
-
+    } catch (error) {
+        // We'll also log the error to the console for now
+        console.error(error);
+        return {message: 'Database Error: Failed to Update Invoice.'};
+    }
     revalidatePath('/dashboard/invoices');
     redirect('/dashboard/invoices');
 }
